@@ -55,7 +55,6 @@
                 </div>     
             </div>
             <script  type="text/javascript">
-
                 // Add button function
                  document.getElementById('add').onclick = addtext;
                 function addtext() {
@@ -65,11 +64,12 @@
                         var option = document.createElement("option");
                         option.text = nameValue;
                         x.add(option);
+                        document.getElementById('writeXml').innerHTML = " ";
                         document.getElementById('alert').innerHTML = nameValue+' - Name Value pair added.';
                         document.getElementById('alert').className = 'alert alert-primary d-block';
                     }
                     else
-                        alert('Incorrect Name Value pair format.');
+                    document.getElementById('writeXml').innerHTML = 'Incorrect Name Value pair format.';
                 }
                 
                 // Delete button function
@@ -81,6 +81,7 @@
                     if (myList.options[i].selected) {
                       myList.remove(i);
                     }
+                    document.getElementById('writeXml').innerHTML = " ";
                     document.getElementById('alert').innerHTML = 'Name Value pair deleted.';
                     document.getElementById('alert').className = 'alert alert-danger d-block';
                   }
@@ -104,6 +105,7 @@
                     
                    clearList(myList);
                    fillList(myList, values);
+                   document.getElementById('writeXml').innerHTML = " ";
                    document.getElementById('alert').innerHTML = 'Sorted by value';
                    document.getElementById('alert').className = 'alert alert-primary d-block';
                 }
@@ -124,9 +126,9 @@
                             }
                         });
                     
-                    clearList(myList);
-                 
+                    clearList(myList);              
                     fillList(myList, values);
+                    document.getElementById('writeXml').innerHTML = " ";
                     document.getElementById('alert').innerHTML = 'Sorted by name.';
                     document.getElementById('alert').className = 'alert alert-primary d-block';
                 }
@@ -153,24 +155,18 @@
                         var valuesList  = new Array();
                         var xmlString;  
                         var xmlString = "<?xml version='1.0' encoding='utf-8'?>";
-                    xmlString = xmlString +"    <ListItem>";
-            
-
-                        var res = new Array();
+                        xmlString = xmlString +"    <ListItem>";
+                       var res = new Array();
                        if(listLength>0) { 
                             for (var i=0;i<listLength;i++) {
                                 valuesList[i] = myListItem.options[i].text;
                                 res = valuesList[i].split('=');
                                 xmlString = xmlString +"    <Name>"+res[0]+"</Name>";
                                 xmlString = xmlString +"    <Value>"+res[1]+"</Name>";
-
-                                
-                            }
+                           }
                             xmlString = xmlString +"    </ListItem>";
                             var parser = new DOMParser();
-
                             var xml  = parser.parseFromString(xmlString, "text/xml");
-                            console.log(xml);
                             document .getElementById('writeXml').innerHTML= xml;
                             // HTML conversion only
                         var htmlString = htmlEntities(xmlString);
@@ -180,7 +176,6 @@
                         }   
                    }
                     function htmlEntities(str) {
-
                     var htmlString = String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;&nbsp;').replace(/"/g, '&quot;');
                     return htmlString;
             }
