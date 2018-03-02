@@ -16,6 +16,8 @@
                  <div class="card">
                     <h5 class="card-header">Test</h5>
                     <div class="card-body">
+                            <div class="alert alert-primary d-none" role="alert" id="alert">                    
+                            </div>
                               <form>
                                     <div class="form-row">
                                       <div class="form-group col-md-6">
@@ -46,6 +48,8 @@
                                           </div>
                                       </div>
                                   </form>
+                                  <p  id="writeXml"></p>
+
                      </div>
                   </div>
                 </div>     
@@ -61,6 +65,8 @@
                         var option = document.createElement("option");
                         option.text = nameValue;
                         x.add(option);
+                        document.getElementById('alert').innerHTML = nameValue+' - Name Value pair added.';
+                        document.getElementById('alert').className = 'alert alert-primary d-block';
                     }
                     else
                         alert('Incorrect Name Value pair format.');
@@ -75,6 +81,8 @@
                     if (myList.options[i].selected) {
                       myList.remove(i);
                     }
+                    document.getElementById('alert').innerHTML = 'Name Value pair deleted.';
+                    document.getElementById('alert').className = 'alert alert-danger d-block';
                   }
                 }
                 
@@ -96,6 +104,8 @@
                     
                    clearList(myList);
                    fillList(myList, values);
+                   document.getElementById('alert').innerHTML = 'Sorted by value';
+                   document.getElementById('alert').className = 'alert alert-primary d-block';
                 }
                 
                 // Sort by name button function
@@ -117,6 +127,8 @@
                     clearList(myList);
                  
                     fillList(myList, values);
+                    document.getElementById('alert').innerHTML = 'Sorted by name.';
+                    document.getElementById('alert').className = 'alert alert-primary d-block';
                 }
                 
                 function clearList(list) {
@@ -137,18 +149,42 @@
                 document.getElementById('viewXml').onclick = viewXml;
                 function viewXml(){
                         var myListItem  = document.getElementById('list');
+                        var listLength = myListItem.options.length;
                         var valuesList  = new Array();
-                        var xmlString   = "";  
+                        var xmlString;  
+                        var xmlString = "<?xml version='1.0' encoding='utf-8'?>";
+                    xmlString = xmlString +"    <ListItem>";
+            
+
                         var res = new Array();
-                        for (var i=0;i<myListItem.options.length;i++) {
-                            valuesList[i] = myListItem.options[i].text;
-                            res = valuesList[i].split('=');
-                            xmlString += '<Name>'+res[0]+'</Name><Value>'+res[1]+'</Value>';
-                        }
-                        var parser = new DOMParser();
-                        var xml  = parser.parseFromString('<?xml version="1.0" encoding="utf-8"?><ListItem>'+xmlString+'</ListItem>', "application/xml");
-                        console.log(xml);
+                       if(listLength>0) { 
+                            for (var i=0;i<listLength;i++) {
+                                valuesList[i] = myListItem.options[i].text;
+                                res = valuesList[i].split('=');
+                                xmlString = xmlString +"    <Name>"+res[0]+"</Name>";
+                                xmlString = xmlString +"    <Value>"+res[1]+"</Name>";
+
+                                
+                            }
+                            xmlString = xmlString +"    </ListItem>";
+                            var parser = new DOMParser();
+
+                            var xml  = parser.parseFromString(xmlString, "text/xml");
+                            console.log(xml);
+                            document .getElementById('writeXml').innerHTML= xml;
+                            // HTML conversion only
+                        var htmlString = htmlEntities(xmlString);
+                        document.getElementById('writeXml').innerHTML = htmlString;
+                        document.getElementById('alert').innerHTML = 'Showing XML format in the below.';
+                        document.getElementById('alert').className = 'alert alert-primary d-block';                     
+                        }   
                    }
+                    function htmlEntities(str) {
+
+                    var htmlString = String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;&nbsp;').replace(/"/g, '&quot;');
+                    return htmlString;
+            }
+
                 </script>  
         <script src="js/jquery.min.js"></script>
         <script src="js/popper.min.js"></script>
