@@ -8,24 +8,6 @@
         <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/style.css">
-	 <style>
-		
-     select {
-       -webkit-appearance: none;
-       -moz-appearance: none;
-       appearance: none;
-	border:solid 1px red;	     
-     }
-	select option{
-		
-	-webkit-appearance: none;
-       -moz-appearance: none;
-       appearance: none;
-		position:sticky;
-		color:red;
-}
-		 
-	    </style>	 
     </head>
     <body>
             <div class="container">
@@ -34,11 +16,13 @@
                  <div class="card">
                     <h5 class="card-header">Test</h5>
                     <div class="card-body">
-                            <div class="alert alert-primary d-none" role="alert" id="alert">                    
-                            </div>
+                            <div class="alert alert-primary d-none" role="alert" id="alert">
+                    
+                              </div>
                               <form>
                                     <div class="form-row">
                                       <div class="form-group col-md-6">
+
                                         <label>Type your text</label>
                                         <input type="text" class="form-control" id='my-text-box' value="Name=Value" placeholder="Name=Value">
                                       </div>
@@ -51,158 +35,129 @@
                                   <div class="form-row">
                                         <div class="form-group col-md-6">
                                                 <label>Name/Value Pair List</label>
-                                                <div style="height:100%;"><select multiple="multiple" class="custom-select" id="list" size="3" >
-							</select></div>
+                                                 <textarea id='output' class="form-control h-75"></textarea>
                                         </div>
                                         <div class="form-group col-md-6">
                                                 <div class="w-100 d-inline-block"></div>
-                                                 <button type="button" id="deleteButton" class="btn btn-danger" onclick="deleteEntry()" title="Delete">Delete</button>
+                                                <!-- <button type="button" id="deleteButton" class="btn btn-danger" onclick="deleteEntry()" title="Delete">Delete</button>-->
+                                                <button type="button" id="deleteButton" class="btn btn-danger"  title="Delete">Delete</button>
                                                  <div class="w-100 d-inline-block"></div>
-        										<button type="button" id="sortByValue" class="btn btn-primary" title="Sort By Value">Sort By Value</button>
+        										<button type="button"  id='sortbyvalue' onclick='sortByValue()' class="btn btn-primary" title="Sort By Value">Sort By Value</button>
         										<div class="w-100 d-inline-block"></div>
-       											 <button type="button" id="sortByName" class="btn btn-primary">Sort By Name</button>
+       											 <button type="button" id="sortbykey" onclick='sortByKey()' class="btn btn-primary">Sort By Name</button>
        											 <div class="w-100 d-inline-block"></div>
         										<button type="button" id="viewXml" class="btn btn-primary">View XML</button>
                                           </div>
                                       </div>
                                   </form>
-                                  <p  id="writeXml"></p>
-
+                                  <div class="row">
+                                    <p  id="writeXml"></p>
+                                </div> 
                      </div>
                   </div>
                 </div>     
             </div>
-        <script src="js/jquery.min.js"></script>
-	
+            <script src="js/jquery.min.js"></script>
             <script  type="text/javascript">
-	
                 // Add button function
-                 document.getElementById('add').onclick = addtext;
+                document.getElementById('add').onclick = addtext;
                 function addtext() {
                     var nameValue = document.getElementById('my-text-box').value;
-                      if (/^([a-zA-Z0-9]+=[a-zA-Z0-9]+)$/.test(nameValue)){
-                        var x = document.getElementById("list");
-                        var option = document.createElement("option");
-                        option.text = nameValue;
-                        x.add(option);
+                    if (/^([a-zA-Z0-9]+=[a-zA-Z0-9]+)$/.test(nameValue)) {
+                       document.getElementById('output').value += nameValue + '\n';
                         document.getElementById('writeXml').innerHTML = " ";
-                        document.getElementById('alert').innerHTML = nameValue+' - Name Value pair added.';
+                        document.getElementById('alert').innerHTML = 'Name Value pair added.';
                         document.getElementById('alert').className = 'alert alert-primary d-block';
-                    }
+                    } 
                     else
-                    document.getElementById('writeXml').innerHTML = 'Incorrect Name Value pair format.';
+                        alert('Incorrect Name Value pair format.');
                 }
-                
-                // Delete button function
-                document.getElementById('deleteButton').onclick = deleteEntry;
-                function deleteEntry(){
-                    var myList = document.getElementById('list');
-                    var i;
-                    for (i = myList.length - 1; i>=0; i--) {
-                    if (myList.options[i].selected) {
-                      myList.remove(i);
-                    }
-                    document.getElementById('writeXml').innerHTML = " ";
-                    document.getElementById('alert').innerHTML = 'Name Value pair deleted.';
-                    document.getElementById('alert').className = 'alert alert-danger d-block';
-                  }
-                }
-                
-                // Sort by Value button function
-                document.getElementById('sortByValue').onclick = sortByValue;
-                function sortByValue(){
-                    var myList = document.getElementById('list');
-                    var values = new Array();
-                    for (var i=0;i<myList.options.length;i++) {
-                        values[i] = myList.options[i].text;
-                       }
-                      values.sort(function(a, b){
-                            if(a != "" && b != ""){
-                                return a.split('=')[1].localeCompare(b.split('=')[1])
-                            } else {
-                                return 0
-                            }
-                        });
-                    
-                   clearList(myList);
-                   fillList(myList, values);
-                   document.getElementById('writeXml').innerHTML = " ";
-                   document.getElementById('alert').innerHTML = 'Sorted by value';
-                   document.getElementById('alert').className = 'alert alert-primary d-block';
-                }
-                
-                // Sort by name button function
-                document.getElementById('sortByName').onclick = sortByName;
-                function sortByName(){
-                    var myList = document.getElementById('list');
-                    var values = new Array();
-                    for (var i=0;i<myList.options.length;i++) {
-                        values[i] = myList.options[i].text;
-                    }
-                      values.sort(function (a, b){
-                            if(a != "" && b != ""){
-                                return a.split('=')[0].localeCompare(b.split('=')[0])
-                            } else {
-                                return 0
-                            }
-                        });
-                    
-                    clearList(myList);              
-                    fillList(myList, values);
+
+                  // Sort by name button function
+                document.getElementById('sortbykey').onclick = sortByKey;
+                function sortByKey() {
+                    var textarea = document.getElementById("output");
+                    textarea.value = textarea.value.split("\n").sort(function(a, b){
+                        if(a != "" && b != ""){
+                            return a.split('=')[0].localeCompare(b.split('=')[0])
+                        } else {
+                            return 0
+                        }
+                    }).join("\n");
                     document.getElementById('writeXml').innerHTML = " ";
                     document.getElementById('alert').innerHTML = 'Sorted by name.';
                     document.getElementById('alert').className = 'alert alert-primary d-block';
                 }
-                
-                function clearList(list) {
-                    while (list.options.length > 0) {
-                        list.options[0] = null;
-                    }
+
+                // Sort by Value button function
+                document.getElementById('sortbyvalue').onclick = sortByValue;
+                function sortByValue() {
+                    var textarea = document.getElementById("output");
+                    textarea.value = textarea.value.split("\n").sort(function(a, b){
+                        if(a != "" && b != ""){
+                            return a.split('=')[1].localeCompare(b.split('=')[1])
+                        } else {
+                            return 0
+                        }
+                    }).join("\n");
+                    document.getElementById('writeXml').innerHTML = " ";
+                   document.getElementById('alert').innerHTML = 'Sorted by value';
+                   document.getElementById('alert').className = 'alert alert-primary d-block';
                 }
-                
-                function fillList(myList, values){
-                    for (var i=0;i<values.length;i++) {
-                        var option = document.createElement("option");
-                        option.text = values[i];
-                        myList.options[i] = option;
-                    }
-                }
-                
+
+                   // Delete the button function      
+                	$("#deleteButton").click(function () {
+                     var ele  = document.getElementById('output');
+                    var text = ele.value;
+                    text = text.slice(0, ele.selectionStart) + text.slice(ele.selectionEnd);
+                    ele.value = $.trim(text);
+                        if(ele.value!="")
+                         ele.value+= '\n';
+                        if(ele.value=="")
+    	                    document.getElementById('output').value="";
+
+    	            document.getElementById('writeXml').innerHTML = " ";
+                    document.getElementById('alert').innerHTML = 'Name Value pair deleted.';
+                    document.getElementById('alert').className = 'alert alert-danger d-block';
+   });
                 // view xml button function
                 document.getElementById('viewXml').onclick = viewXml;
                 function viewXml(){
-                        var myListItem  = document.getElementById('list');
-                        var listLength = myListItem.options.length;
+            
+                        var myListItem  = document.getElementById('output');
+                        var items = new Array();
+                        items = myListItem.value.split("\n");
+                        var listLength = (items.length)-1;
                         var valuesList  = new Array();
                         var xmlString;  
                         var xmlString = "<?xml version='1.0' encoding='utf-8'?>";
-                        xmlString = xmlString +"    <ListItem>";
-                       var res = new Array();
+                        xmlString = xmlString +"    <ListItem>"; 
+                        var res = new Array();
                        if(listLength>0) { 
                             for (var i=0;i<listLength;i++) {
-                                valuesList[i] = myListItem.options[i].text;
+                                valuesList[i] = items[i];
                                 res = valuesList[i].split('=');
                                 xmlString = xmlString +"    <Name>"+res[0]+"</Name>";
-                                xmlString = xmlString +"    <Value>"+res[1]+"</Value>";
-                           }
+                                xmlString = xmlString +"    <Value>"+res[1]+"</Name>";
+                                    
+                            }
                             xmlString = xmlString +"    </ListItem>";
                             var parser = new DOMParser();
                             var xml  = parser.parseFromString(xmlString, "text/xml");
                             document .getElementById('writeXml').innerHTML= xml;
                             // HTML conversion only
-                        var htmlString = htmlEntities(xmlString);
-                        document.getElementById('writeXml').innerHTML = htmlString;
-                        document.getElementById('alert').innerHTML = 'Showing XML format in the below.';
-                        document.getElementById('alert').className = 'alert alert-primary d-block';                     
+                            var htmlString = htmlEntities(xmlString);
+                            document.getElementById('writeXml').innerHTML = htmlString; 
+                            document.getElementById('alert').innerHTML = 'Showing XML format in the below.';
+                            document.getElementById('alert').className = 'alert alert-primary d-block';                               
                         }   
                    }
                     function htmlEntities(str) {
-                    var htmlString = String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;&nbsp;').replace(/"/g, '&quot;');
+                    var htmlString = String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
                     return htmlString;
             }
-
-                </script>  
-        <script src="js/jquery.min.js"></script>
+         </script>  
+        
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
     </body>
