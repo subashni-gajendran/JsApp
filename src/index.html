@@ -57,19 +57,7 @@
         <script src="js/jquery.min.js"></script>
 	
             <script  type="text/javascript">
-		    
-		    $(document).on('mousedown',function(e){
-    console.log(e.target.nodeName); // "select" or "option" ?
-    var elm = $(e.target);
-    if (elm.is('select') || elm.closest('select').length) {
-        if (elm.is('select')) var sel = elm;
-        else var sel = elm.closest('select');
-        e.preventDefault();
-        sel.blur();
-        window.focus();
-        //------ do other things with the select box
-    }
-});
+	
                 // Add button function
                  document.getElementById('add').onclick = addtext;
                 function addtext() {
