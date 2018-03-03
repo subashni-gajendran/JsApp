@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+    <head>
+        <title>Standard Development Test</title>
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,800">
+        <link rel='stylesheet' href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/style.css">
+    </head>
+    <body>
+            <div class="container">
+                    <div class="h-200 d-inline-block"></div>
+                    <div class="h-200 d-inline-block"></div>
+                 <div class="card">
+                    <h5 class="card-header">Test</h5>
+                    <div class="card-body">
+                            <div class="alert alert-primary d-none" role="alert" id="alert">
+                    
+                              </div>
+                              <form>
+                                    <div class="form-row">
+                                      <div class="form-group col-md-6">
+
+                                        <label>Type your text</label>
+                                        <input type="text" class="form-control" id='my-text-box' value="Name=Value" placeholder="Name=Value">
+                                      </div>
+                                      <div class="form-group col-md-6">
+                                         <div class="h-25 w-100 d-inline-block"></div>
+                                         <button type="button" id='add' class="btn btn-primary">Add</button>
+                                       </div>
+                                  </div>
+                                    
+                                  <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                                <label>Name/Value Pair List</label>
+                                                 <textarea id='output' class="form-control h-75"></textarea>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                                <div class="w-100 d-inline-block"></div>
+                                                 <div class="w-100 d-inline-block"></div>
+        										<button type="button"  id='sortbyvalue' onclick='sortByValue()' class="btn btn-primary" title="Sort By Value">Sort By Value</button>
+        										<div class="w-100 d-inline-block"></div>
+       											 <button type="button" id="sortbykey" onclick='sortByKey()' class="btn btn-primary">Sort By Name</button>
+       											 <div class="w-100 d-inline-block"></div>
+        										<button type="button" id="viewXml" class="btn btn-primary">View XML</button>
+                                          </div>
+                                      </div>
+                                  </form>
+                                  <div class="row">
+                                    <p  id="writeXml"></p>
+                                </div> 
+                     </div>
+                  </div>
+                </div>     
+            </div>
+            <script  type="text/javascript">
+ // Add button function
+                document.getElementById('add').onclick = addtext;
+                function addtext() {
+                    var nameValue = document.getElementById('my-text-box').value;
+                    if (/^([a-zA-Z0-9]+=[a-zA-Z0-9]+)$/.test(nameValue)) {
+                        document.getElementById('output').textContent += nameValue + '\n';
+                        document.getElementById('writeXml').innerHTML = " ";
+                        document.getElementById('alert').innerHTML = 'Name Value pair added.';
+                        document.getElementById('alert').className = 'alert alert-primary d-block';
+                    } 
+                    else
+                        alert('Incorrect Name Value pair format.');
+                }
+
+                        // Sort by name button function
+                document.getElementById('sortbykey').onclick = sortByKey;
+                function sortByKey() {
+                    var textarea = document.getElementById("output");
+                    textarea.value = textarea.value.split("\n").sort(function(a, b){
+                        if(a != "" && b != ""){
+                            return a.split('=')[0].localeCompare(b.split('=')[0])
+                        } else {
+                            return 0
+                        }
+                    }).join("\n");
+                    document.getElementById('writeXml').innerHTML = " ";
+                    document.getElementById('alert').innerHTML = 'Sorted by name.';
+                    document.getElementById('alert').className = 'alert alert-primary d-block';
+                }
+
+                // Sort by Value button function
+
+                document.getElementById('sortbyvalue').onclick = sortByValue;
+                function sortByValue() {
+                    var textarea = document.getElementById("output");
+                    textarea.value = textarea.value.split("\n").sort(function(a, b){
+                        if(a != "" && b != ""){
+                            return a.split('=')[1].localeCompare(b.split('=')[1])
+                        } else {
+                            return 0
+                        }
+                    }).join("\n");
+                    document.getElementById('writeXml').innerHTML = " ";
+                   document.getElementById('alert').innerHTML = 'Sorted by value';
+                   document.getElementById('alert').className = 'alert alert-primary d-block';
+                }
+           
+                
+                
+                // view xml button function
+                document.getElementById('viewXml').onclick = viewXml;
+                function viewXml(){
+                   
+                        var myListItem  = document.getElementById('output');
+                        var items = new Array();
+                        items = myListItem.value.split("\n");
+                        var listLength = (items.length)-1;
+                        var valuesList  = new Array();
+                        var xmlString;  
+                        var xmlString = "<?xml version='1.0' encoding='utf-8'?>";
+                        xmlString = xmlString +"    <ListItem>"; 
+                        var res = new Array();
+                       if(listLength>0) { 
+                            for (var i=0;i<listLength;i++) {
+                                valuesList[i] = items[i];
+                                res = valuesList[i].split('=');
+                                xmlString = xmlString +"    <Name>"+res[0]+"</Name>";
+                                xmlString = xmlString +"    <Value>"+res[1]+"</Name>";
+                                    
+                            }
+                            xmlString = xmlString +"    </ListItem>";
+                            var parser = new DOMParser();
+                            var xml  = parser.parseFromString(xmlString, "text/xml");
+                            document .getElementById('writeXml').innerHTML= xml;
+                            // HTML conversion only
+                            var htmlString = htmlEntities(xmlString);
+                            document.getElementById('writeXml').innerHTML = htmlString; 
+                            document.getElementById('alert').innerHTML = 'Showing XML format in the below.';
+                            document.getElementById('alert').className = 'alert alert-primary d-block';                               
+                        }   
+                   }
+                    function htmlEntities(str) {
+                    var htmlString = String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                    return htmlString;
+            }
+         </script>  
+        
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+    </body>
+</html>
