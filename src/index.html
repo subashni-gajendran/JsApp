@@ -109,6 +109,7 @@
                 	$("#deleteButton").click(function () {
                      var ele  = document.getElementById('output');
                     var text = ele.value;
+                    if(ele.selectionEnd!=0) {
                     text = text.slice(0, ele.selectionStart) + text.slice(ele.selectionEnd);
                     ele.value = $.trim(text);
                         if(ele.value!="")
@@ -119,6 +120,8 @@
     	            document.getElementById('writeXml').innerHTML = " ";
                     document.getElementById('alert').innerHTML = 'Name Value pair deleted.';
                     document.getElementById('alert').className = 'alert alert-danger d-block';
+                    }
+                    
    });
                 // view xml button function
                 document.getElementById('viewXml').onclick = viewXml;
